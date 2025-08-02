@@ -1,0 +1,58 @@
+<div class="dialog-container">
+  <h2 mat-dialog-title>
+    <mat-icon>{{ isEditMode ? 'edit' : 'add' }}</mat-icon>
+    {{ isEditMode ? 'Edit Todo' : 'Create New Todo' }}
+  </h2>
+
+  <mat-dialog-content>
+    <form [formGroup]="todoForm" class="todo-form">
+      <mat-form-field appearance="outline" class="full-width">
+        <mat-label>Title</mat-label>
+        <input matInput formControlName="title" placeholder="Enter todo title" maxlength="200">
+        <mat-hint>{{ todoForm.get('title')?.value?.length || 0 }}/200</mat-hint>
+        <mat-error>{{ getErrorMessage('title') }}</mat-error>
+      </mat-form-field>
+
+      <mat-form-field appearance="outline" class="full-width">
+        <mat-label>Description</mat-label>
+        <textarea 
+          matInput 
+          formControlName="discription" 
+          placeholder="Enter detailed description"
+          rows="4"
+          maxlength="1000">
+        </textarea>
+        <mat-hint>{{ todoForm.get('discription')?.value?.length || 0 }}/1000</mat-hint>
+        <mat-error>{{ getErrorMessage('discription') }}</mat-error>
+      </mat-form-field>
+
+      <mat-form-field appearance="outline" class="full-width">
+        <mat-label>Due Date</mat-label>
+        <input matInput [matDatepicker]="picker" formControlName="dueDate">
+        <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
+        <mat-datepicker #picker></mat-datepicker>
+        <mat-error>{{ getErrorMessage('dueDate') }}</mat-error>
+      </mat-form-field>
+
+      <div *ngIf="isEditMode" class="checkbox-container">
+        <mat-checkbox formControlName="isCompleted" color="primary">
+          Mark as completed
+        </mat-checkbox>
+      </div>
+    </form>
+  </mat-dialog-content>
+
+  <mat-dialog-actions align="end">
+    <button mat-button (click)="onCancel()" [disabled]="loading">
+      Cancel
+    </button>
+    <button 
+      mat-raised-button 
+      color="primary" 
+      (click)="onSubmit()" 
+      [disabled]="!todoForm.valid || loading">
+      <mat-spinner *ngIf="loading" diameter="20"></mat-spinner>
+      <span *ngIf="!loading">{{ isEditMode ? 'Update' : 'Create' }}</span>
+    </button>
+  </mat-dialog-actions>
+</div>
